@@ -3,3 +3,15 @@
 @source "../../.flowbite-react/class-list.json";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@layer components {
+  .theme-toggle {
+    display: block;
+  }
+
+  @media (display-mode: standalone) {
+    .theme-toggle {
+      display: none;
+    }
+  }
+}

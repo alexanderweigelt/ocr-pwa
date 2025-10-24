@@ -6,7 +6,7 @@ import Installation from "@/components/Installation";
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center">
-      <header className="relative flex flex-col items-center">
+      <header className="theme-toggle relative">
         <h1 className="relative text-center text-6xl leading-[125%] font-bold text-gray-900 dark:text-gray-200">
           OCR
         </h1>
