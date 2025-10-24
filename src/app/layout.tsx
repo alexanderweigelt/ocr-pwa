@@ -50,10 +50,11 @@ export default function RootLayout({
               src="/pattern-dark.svg"
               width="803"
               height="775"
+              loading={"eager"}
             />
           </div>
         </div>
-        <div className="absolute top-4 right-4">
+        <div className="theme-toggle absolute top-4 right-4">
           <DarkThemeToggle />
         </div>
         {children}
