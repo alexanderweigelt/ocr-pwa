@@ -32,7 +32,7 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white px-4 py-24 antialiased dark:bg-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white px-4 py-12 antialiased dark:bg-gray-900`}
       >
         <ThemeInit />
         <div className="absolute inset-0 size-full">

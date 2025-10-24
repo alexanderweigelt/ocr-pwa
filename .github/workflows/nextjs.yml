@@ -70,15 +70,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generates the class list for your flowbite-react components
+        run: npx flowbite-react build
+
       - name: Build with Next.js
-        run: pnpm next build
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_BASE_PATH: /ocr-pwa
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
         # Only upload artifact for main branch deployments
-        if: github.ref == 'refs/heads/main'
+        # if: github.ref == 'refs/heads/main'
 
   # Deployment job
   deploy:
