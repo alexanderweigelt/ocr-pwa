@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --experimental-https",
     "build": "next build",
-    "start": "next start",
+    "start": "serve out -p 3000 --single --ssl-cert certificates/localhost.pem --ssl-key certificates/localhost-key.pem",
     "lint": "eslint",
     "format": "prettier . --write",
     "format:check": "prettier . --check"
@@ -28,6 +28,7 @@
     "eslint-config-next": "16.0.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
+    "serve": "^14.2.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
