@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  Button,
-  Card,
-  FileInput,
-  Label,
-  Select,
-} from "flowbite-react";
+import { Button, Textarea, FileInput, Label, Select } from "flowbite-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { recognize } from "tesseract.js";
 
 interface IFormInput {
   dropzoneFile: FileList | null;
@@ -26,9 +22,36 @@ export default function Converter() {
     },
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    const files = data.dropzoneFile ? Array.from(data.dropzoneFile) : [];
-    console.log("Submit:", { files, language: data.language });
+  // --- Minimal OCR-Status ---
+  const [isRunning, setIsRunning] = useState(false);
+  const [resultText, setResultText] = useState("");
+  const [progressMsg, setProgressMsg] = useState("");
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const file = data.dropzoneFile?.[0];
+    if (!file) return;
+
+    setIsRunning(true);
+    setResultText("");
+    setProgressMsg("Loading ...");
+
+    try {
+      const {
+        data: { text },
+      } = await recognize(file, data.language, {
+        logger: (m) => {
+          if (m?.status) setProgressMsg(m.status);
+        },
+      });
+
+      setResultText(text || "");
+      setProgressMsg("Done!");
+    } catch (err: any) {
+      setProgressMsg("OCR error");
+      setResultText(err?.message ?? String(err));
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   return (
@@ -48,7 +71,11 @@ export default function Converter() {
           <div className="flex w-full items-center justify-center">
             <Label
               htmlFor="dropzone-file"
-              className={`${errors.dropzoneFile ? "bg-red-200 hover:bg-red-300" : "bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"} flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 dark:hover:border-gray-500`}
+              className={`${
+                errors.dropzoneFile
+                  ? "bg-red-200 hover:bg-red-300"
+                  : "bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
+              } flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 dark:hover:border-gray-500`}
             >
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <svg
@@ -71,12 +98,13 @@ export default function Converter() {
                   and drop
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  SVG, PNG, JPG or GIF (MAX. 800x400px)
+                  WEBP, PNG, JPG or GIF (MAX. 800x400px)
                 </p>
                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                   {errors.dropzoneFile && errors.dropzoneFile.message}
                 </p>
               </div>
+
               <Controller
                 name="dropzoneFile"
                 control={control}
@@ -119,12 +147,33 @@ export default function Converter() {
             />
           </div>
 
-          <Button type="submit">Start</Button>
+          <Button type="submit" disabled={isRunning}>
+            {isRunning ? "Running ..." : "Start"}
+          </Button>
         </form>
-        <Card>
-          <output className="whitespace-pre"></output>
-        </Card>
+
+        <div>
+          <div className="mb-2 block md:mb-0">
+            <Label className={"md:sr-only"} htmlFor="output">
+              Your converted text
+            </Label>
+          </div>
+          <Textarea
+            className={"md:h-full"}
+            id="output"
+            placeholder="Expect your result here ..."
+            required
+            rows={4}
+            value={resultText}
+            readOnly={true}
+          />
+        </div>
       </div>
+      {isRunning && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {progressMsg}
+        </p>
+      )}
     </>
   );
 }

@@ -12,7 +12,7 @@ export default function Home() {
         </h1>
       </header>
       <div
-        className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-36"
+        className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-12 md:gap-36"
         id="top"
       >
         <section

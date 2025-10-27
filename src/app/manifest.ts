@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export const dynamic = "force-static";
 export default function manifest(): MetadataRoute.Manifest {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
   const getPath = (path: string): string => `${basePath}${path}`;
   return {
     name: "OCR (PWA)",
@@ -15,7 +15,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display_override: ["window-controls-overlay"],
     orientation: "any",
     background_color: "#111827",
-    theme_color: "#1E98E7",
+    theme_color: "#1c64f2",
     icons: [
       {
         src: getPath("/icons/android-chrome-192x192.png"),
