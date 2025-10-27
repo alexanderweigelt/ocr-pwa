@@ -1,8 +1,7 @@
 import { ThemeModeScript } from "flowbite-react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { DarkThemeToggle } from "flowbite-react";
-import Image from "next/image";
 import { ThemeInit } from "../../.flowbite-react/init";
 import "./globals.css";
 
@@ -21,6 +20,14 @@ export const metadata: Metadata = {
   description: "An image to text converter",
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#111827" },
+    { media: "(prefers-color-scheme: dark)", color: "white" },
+  ],
+  colorScheme: "dark light",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,25 +42,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white px-4 py-12 antialiased dark:bg-gray-900`}
       >
         <ThemeInit />
-        <div className="absolute inset-0 size-full">
-          <div className="relative h-full w-full select-none">
-            <Image
-              className="absolute right-0 min-w-dvh dark:hidden"
-              alt="Pattern Light"
-              src="/pattern-light.svg"
-              width="803"
-              height="774"
-            />
-            <Image
-              className="absolute right-0 hidden min-w-dvh dark:block"
-              alt="Pattern Dark"
-              src="/pattern-dark.svg"
-              width="803"
-              height="775"
-              loading={"eager"}
-            />
-          </div>
-        </div>
         <div className="theme-toggle absolute top-4 right-4">
           <DarkThemeToggle />
         </div>
