@@ -1,5 +1,5 @@
 import Navigation from "@/components/Navigation";
-import Converter from "../components/Converter";
+import Converter from "@/components/Converter";
 import Docs from "@/components/Docs";
 import Installation from "@/components/Installation";
 
