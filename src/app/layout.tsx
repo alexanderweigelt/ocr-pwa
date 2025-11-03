@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { DarkThemeToggle } from "flowbite-react";
 import { ThemeInit } from "../../.flowbite-react/init";
 import "./globals.css";
+import SwInit from "@/providers/SwInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,8 +23,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#111827" },
-    { media: "(prefers-color-scheme: dark)", color: "white" },
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "#111827" },
   ],
   colorScheme: "dark light",
 };
@@ -42,6 +43,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white px-4 py-12 antialiased dark:bg-gray-900`}
       >
         <ThemeInit />
+        <SwInit />
         <div className="theme-toggle absolute top-4 right-4">
           <DarkThemeToggle />
         </div>

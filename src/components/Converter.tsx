@@ -22,10 +22,49 @@ export default function Converter() {
     },
   });
 
-  // --- Minimal OCR-Status ---
   const [isRunning, setIsRunning] = useState(false);
   const [resultText, setResultText] = useState("");
-  const [progressMsg, setProgressMsg] = useState("");
+
+  const notify = async (title: string, body: string) => {
+    if (!("Notification" in window)) return;
+
+    if (Notification.permission === "default") {
+      try {
+        await Notification.requestPermission();
+      } catch {
+        console.error("[Notification] Permission denied");
+      }
+    }
+
+    if (Notification.permission === "granted") {
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) {
+          await reg.showNotification(title, {
+            body,
+            icon: `${basePath}/icons/android-chrome-192x192.png`,
+            tag: "ocr-status",
+          });
+          console.info("[Notification] via SW");
+          return;
+        }
+      } catch (e) {
+        console.warn(
+          "[Notification] SW showNotification failed, fallback to window.Notification",
+          e,
+        );
+      }
+      new Notification(title, {
+        body,
+        icon: `${basePath}/icons/android-chrome-192x192.png`,
+        tag: "ocr-status",
+      });
+      console.info("[Notify] via window.Notification");
+    } else {
+      console.info(`[Notification] ${title}: ${body}`);
+    }
+  };
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const file = data.dropzoneFile?.[0];
@@ -33,22 +72,28 @@ export default function Converter() {
 
     setIsRunning(true);
     setResultText("");
-    setProgressMsg("Loading ...");
 
     try {
       const {
         data: { text },
       } = await recognize(file, data.language, {
-        logger: (m) => {
-          if (m?.status) setProgressMsg(m.status);
+        logger: function (m) {
+          console.log(m);
         },
       });
 
+      await notify(
+        "OCR successful",
+        `Language: ${data.language.toUpperCase()} – Text length: ${Math.min(text?.length ?? 0, 60)}`,
+      );
+
       setResultText(text || "");
-      setProgressMsg("Done!");
-    } catch (err: any) {
-      setProgressMsg("OCR error");
-      setResultText(err?.message ?? String(err));
+    } catch (err: unknown) {
+      let msg = "Unknown error";
+      if (err instanceof Error && typeof err?.message === "string") {
+        msg = err.message;
+      }
+      await notify("OCR error", msg);
     } finally {
       setIsRunning(false);
     }
@@ -169,11 +214,6 @@ export default function Converter() {
           />
         </div>
       </div>
-      {isRunning && (
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {progressMsg}
-        </p>
-      )}
     </>
   );
 }

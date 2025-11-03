@@ -49,24 +49,8 @@ export default function manifest(): MetadataRoute.Manifest {
 
     // Experimental: The next settings are experimental technology!
     // Check the Browser compatibility table carefully before using this in production.
-
-    // File Handling: Öffnet die installierte PWA bei Doppelklick/"Öffnen mit …" auf Bilddateien
-    // → navigiert zu "/#file-open" innerhalb deiner SPA
-    file_handlers: [
-      {
-        action: "/#file-open",
-        accept: {
-          "image/*": [".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff"],
-        },
-      },
-    ],
-    // Bestehendes Fenster nutzen, wenn möglich (bessere UX)
     launch_handler: {
       client_mode: "navigate-existing",
     },
-    // Optional: eigener Deep-Link per Custom Protocol
-    // Beispiel-Link irgendwo im Web: web+ocr:https%3A%2F%2Fexample.com%2Fscan.png
-    // -> öffnet deine installierte PWA und navigiert zu "/#import?src=%s"
-    protocol_handlers: [{ protocol: "web+ocr", url: "/#import?src=%s" }],
   };
 }
